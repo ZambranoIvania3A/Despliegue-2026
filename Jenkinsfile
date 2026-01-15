@@ -1,42 +1,45 @@
+
+
 pipeline {
     agent any
 
     tools {
-       nodejs "Node20"
-       dockerTool "Dockertool" 
-    }
-
-    options {
-        skipDefaultCheckout(true)
+        nodejs "Node20"
+        dockerTool "Dockertool" 
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/ZambranoIvania3A/Despliegue-2026.git'
-            }
-        }
-
         stage('Instalar dependencias') {
             steps {
                 sh 'npm install'
             }
         }
 
-        stage('Construir imagen') {
+        stage('Ejecutar tests') {
             steps {
-                sh 'docker build -t hola-mundo-node .'
+                sh 'chmod +x ./node_modules/.bin/jest'
+                sh 'npm test -- --ci --runInBand'
             }
         }
 
-        stage('Ejecutar contenedor') {
+        stage('Construir Imagen Docker') {
+            when {
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                sh 'docker build -t hola-mundo-node:latest .'
+            }
+        }
+
+        stage('Ejecutar Contenedor Node.js') {
+            when {
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
             steps {
                 sh '''
-                docker stop hola-mundo-node || true
-                docker rm hola-mundo-node || true
-                docker run -d -p 3000:3000 --name hola-mundo-node hola-mundo-node
+                    docker stop hola-mundo-node || true
+                    docker rm hola-mundo-node || true
+                    docker run -d --name hola-mundo-node -p 3000:3000 hola-mundo-node:latest
                 '''
             }
         }
