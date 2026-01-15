@@ -1,9 +1,9 @@
-  pipeline {
+pipeline {
     agent any
 
     tools {
        nodejs "Node20"
-        dockerTool "Dockertool" 
+       dockerTool "Dockertool" 
     }
 
     options {
@@ -15,7 +15,7 @@
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/ZambranoIvania3A/Despliegue2026.git'
+                    url: 'https://github.com/ZambranoIvania3A/Despliegue-2026.git'
             }
         }
 
