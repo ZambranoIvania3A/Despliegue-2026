@@ -1,10 +1,10 @@
   pipeline {
     agent any
 
-    //tools {
-      //  nodejs "Node25"
-        //dockerTool "Dockertool" 
-    //}
+    tools {
+       nodejs "Node25"
+        dockerTool "Dockertool" 
+    }
 
     options {
         skipDefaultCheckout(true)
