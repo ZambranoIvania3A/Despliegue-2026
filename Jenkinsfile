@@ -2,7 +2,7 @@
     agent any
 
     tools {
-       nodejs "Node25"
+       nodejs "Node20"
         dockerTool "Dockertool" 
     }
 
